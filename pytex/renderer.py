@@ -67,8 +67,8 @@ class Renderer(BaseRenderer):
             text = link
         return f"\\href{{{link}}}{{{text}}}"
 
-    def image(self, src, alt="", title=None):
-        return f"\\includegraphics[{title}]{{{src}}}"
+    def image(self, src, alt="", title=None): #这里需要改bug 看原始的render是怎么写的
+        return f"\\includegraphics[]{{{src}}}"
 
     def emphasis(self, text):
         return '\\emph{' + text + '}'
