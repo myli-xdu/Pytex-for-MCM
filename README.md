@@ -5,6 +5,7 @@ mistune应使用2.0.0a3版本。
 ```
 $ pip install mistune==2.0.0a3
 ```
+生成pdf需要安装texlive。
 # 开始
 1.git clone 或者 下载zip ,然后解压到运行目录。
 
@@ -16,3 +17,6 @@ $ pip install mistune==2.0.0a3
 前端:[fcup](https://github.com/lovefc/fcup)
 
 后端:[flask](https://github.com/pallets/flask)
+
+# 示例
+http://49.232.126.87/
