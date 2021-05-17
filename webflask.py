@@ -1,23 +1,13 @@
 from flask import Flask, render_template, request, flash, redirect, send_from_directory, json
-from werkzeug.utils import secure_filename
 from transfunc import fun_trans
 import os
 
 app = Flask(__name__)
-app.config['APP_FOLDER'] = 'D:\\准备面试\\pytex相关\\前后端'
+app.config['APP_FOLDER'] = 'D:\\准备面试\\pytex相关\\前后端'  # 项目所在地址
 app.config['UPLOAD_FOLDER'] = os.path.join(app.config['APP_FOLDER'], 'upload/')
 app.config['RESULTS_FOLDER'] = os.path.join(app.config['APP_FOLDER'], 'results/')
 app.config['EXAMPLE_FOLDER'] = os.path.join(app.config['APP_FOLDER'], 'example/')
-app.secret_key = '19991231'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
-
-ALLOWED_EXTENSIONS = {'zip'}
-
-
-# 判断文件类型是否正确
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+app.secret_key = '12345678'
 
 
 # 设置首页重定向
@@ -52,9 +42,11 @@ def download_file(sub_dir, filename):
     dir_name = os.path.join(app.config['RESULTS_FOLDER'], sub_dir)
     return send_from_directory(dir_name, filename)
 
+
 @app.route('/example/<filename>')
 def download_example(filename):
     return send_from_directory(app.config['EXAMPLE_FOLDER'], filename)
+
 
 if __name__ == '__main__':
     app.run()
