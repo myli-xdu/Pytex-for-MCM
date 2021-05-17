@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <title>基于Pytex的数模工具</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="max-age=72000"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="数学建模工具:Markdown转pdf或tex"/>
+    <meta name="description" content="数学建模工具:Markdown转pdf或tex"/>
+    <link rel="stylesheet" href="{{url_for('static',filename ='pintuer/pintuer.css')}}">
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{{url_for('static',filename ='pintuer/pintuer.js')}}"></script>
+
+</head>
+<style>
+   @font-face {
+      font-family: 'logo';
+      src: url("{{url_for('static',filename ='logo.ttf')}}");
+   }
+
+   .logo {
+      font-size: 25px;
+      font-family: "logo";
+   }
+
+   .csbg {
+      background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
+   }
+
+
+</style>
+<script>
+   // 进度条
+   function Progress(value) {
+      $('#myProgress').css('width', value + '%');
+   }
+
+   function CloseDialog() {
+      $('#mydialog').hide();
+   }
+
+
+</script>
+
+<body>
+<!-- 弹出框 -->
+<div style="position: fixed;max-width:600px;left: 50%;top: 50%; transform: translate(-50%, -61.8%)">
+    <div class="dialog-win" id="mydialog" style="z-index: 11; top: 10px;display: none;">
+        <div class="dialog open">
+            <div class="dialog-head">
+                <span class="close rotate-hover" onclick="CloseDialog()"></span><strong>转换结果下载</strong>
+            </div>
+            <div class="dialog-body" style="width:100%;">
+                <a href="" target="_blank" id="urlpdf" download>点我下载pdf</a><br>
+                <a href="" target="_blank" id="urltex" download>点我下载tex</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="view-body">
+        <div class="keypoint bg-blue bg-inverse radius text-center csbg">
+            <a href="https://gitee.com/lovefc/fcup" target="_blank">
+                <h1 class="logo">
+                    基于Pytex的数模工具
+                </h1>
+            </a>
+            <p>
+                数学建模工具:Markdown转pdf或tex</p>
+            <p>
+                <br/>
+                <button class="button bg-main button-big icon-arrow-circle-up" id="upid">
+                    立即上传
+                </button>
+            </p>
+        </div>
+        <div class="progress progress-small">
+            <div class="progress-bar bg-yellow" id="myProgress" style="width: 0%;">
+            </div>
+        </div>
+    </div>
+
+    <div class="view-body">
+        <div class="panel">
+            <div class="panel-head">
+                <strong>使用说明</strong>
+            </div>
+            <ul class="list-group">
+                <li> 1. 该工具可以实现数模场景的Markdown文档转pdf或tex。</li>
+                <li> 2. 请将abstract.md(摘要)、body.md(正文)、所附图片打包成zip上传。<a href="/example/example.zip" target="_blank" style="color:blue" download>点我下载示例文件</a></li>
+                <li> 3. 提示:图片请使用相对地址。</li>
+                <li> 4. 推荐使用Typora Markdown编辑器。</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-layout">
+        <div class="border-top padding-top">
+            <div class="text-center height-big">
+                Powered by <a href="https://github.com/zrr1999/PyTex" target="_blank">Pytex</a> and <a href="https://github.com/lovefc/fcup" target="_blank">fcup</a></div>
+        </div>
+    </div>
+</div>
+</body>
+<!--  fcup.js  -->
+<script src="{{url_for('static',filename ='fcup/js/jquery.fcup.js')}}"></script>
+<script>
+   $.fcup({
+
+      upId: 'upid', //上传dom的id
+
+      upShardSize: '0.1', //切片大小,(单次上传最大值)单位M，默认2M
+
+      upMaxSize: '20', //上传文件大小,单位M，不设置不限制
+
+      upUrl: './uploader', //文件上传接口
+
+      upType: 'zip', //上传类型检测,用,号分割
+
+      //接口返回结果回调，根据结果返回的数据来进行判断，可以返回字符串或者json来进行判断处理
+      upCallBack: function (res) {
+
+         // 状态
+         var status = res.status;
+         // 信息
+         var msg = res.message;
+         // url
+         var url_pdf = res.url_pdf + "?" + Math.random();
+         var url_tex = res.url_tex + "?" + Math.random();
+
+         // 已经完成了
+         if (status == 2) {
+            alert(msg);
+            $('#urlpdf').attr("href", url_pdf);
+            $('#urltex').attr("href", url_tex);
+            $('#mydialog').show();
+         }
+
+         // 还在上传中
+         if (status == 1) {
+            console.log(msg);
+         }
+
+         // 接口返回错误
+         if (status == 0) {
+            // 停止上传触发$.upStop函数
+            $.upStop(msg);
+         }
+         
+         // 判断是否上传过了
+         if(status == 3){
+            Progress(100);
+            $('#pic').attr("src", url);
+            $('#mydialog').show();
+            jQuery.upErrorMsg(msg);         
+         }
+      },
+
+      // 上传过程监听，可以根据当前执行的进度值来改变进度条
+      upEvent: function (num) {
+         // num的值是上传的进度，从1到100
+         Progress(num);
+      },
+
+      // 发生错误后的处理
+      upStop: function (errmsg) {
+         // 这里只是简单的alert一下结果，可以使用其它的弹窗提醒插件
+         alert(errmsg);
+      },
+
+      // 开始上传前的处理和回调,比如进度条初始化等
+      upStart: function () {
+         Progress(0);
+         $('#mydialog').hide();
+         alert('上传中,请等待Latex编译完成,大概需要5-10秒,请勿关闭页面。');
+      }
+
+   });
+
+
+</script>
+<script type="text/javascript" src="https://js.users.51.la/19663859.js"></script>
+</html>
