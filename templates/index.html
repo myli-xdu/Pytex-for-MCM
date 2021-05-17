@@ -14,6 +14,7 @@
     <script src="{{url_for('static',filename ='pintuer/pintuer.js')}}"></script>
 
 </head>
+
 <style>
    @font-face {
       font-family: 'logo';
@@ -30,6 +31,8 @@
    }
 
 
+
+
 </style>
 <script>
    // 进度条
@@ -42,9 +45,19 @@
    }
 
 
+
 </script>
 
 <body>
+
+
+<!-- 弹出框 -->
+<div style="position: fixed;max-width:600px;left: 50%;top: 33%; transform: translate(-50%, -61.8%)">
+    <div class="dialog-win" id="circle" style="display: none;">
+        <div class="tu"><img src="{{url_for('static',filename ='loading.gif')}}" alt=""></div>
+    </div>
+</div>
+
 <!-- 弹出框 -->
 <div style="position: fixed;max-width:600px;left: 50%;top: 50%; transform: translate(-50%, -61.8%)">
     <div class="dialog-win" id="mydialog" style="z-index: 11; top: 10px;display: none;">
@@ -71,7 +84,7 @@
                 数学建模工具:Markdown转pdf或tex</p>
             <p>
                 <br/>
-                <button class="button bg-main button-big icon-arrow-circle-up" id="upid">
+                <button style="visibility:;" class="button bg-main button-big icon-arrow-circle-up" id="upid">
                     立即上传
                 </button>
             </p>
@@ -89,7 +102,8 @@
             </div>
             <ul class="list-group">
                 <li> 1. 该工具可以实现数模场景的Markdown文档转pdf或tex。</li>
-                <li> 2. 请将abstract.md(摘要)、body.md(正文)、所附图片打包成zip上传。<a href="/example/example.zip" target="_blank" style="color:blue" download>点我下载示例文件</a></li>
+                <li> 2. 请将abstract.md(摘要)、body.md(正文)、所附图片打包成zip上传。<a href="/example/example.zip" target="_blank"
+                                                                      style="color:blue" download>点我下载示例文件</a></li>
                 <li> 3. 提示:图片请使用相对地址。</li>
                 <li> 4. 推荐使用Typora Markdown编辑器。</li>
             </ul>
@@ -99,7 +113,8 @@
     <div class="container-layout">
         <div class="border-top padding-top">
             <div class="text-center height-big">
-                Powered by <a href="https://github.com/zrr1999/PyTex" target="_blank">Pytex</a> and <a href="https://github.com/lovefc/fcup" target="_blank">fcup</a></div>
+                Powered by <a href="https://github.com/zrr1999/PyTex" target="_blank">Pytex</a> and <a
+                    href="https://github.com/lovefc/fcup" target="_blank">fcup</a></div>
         </div>
     </div>
 </div>
@@ -132,9 +147,10 @@
 
          // 已经完成了
          if (status == 2) {
-            alert(msg);
             $('#urlpdf').attr("href", url_pdf);
             $('#urltex').attr("href", url_tex);
+            $('#circle').hide();
+            $("#upid").css("visibility","visible");
             $('#mydialog').show();
          }
 
@@ -146,6 +162,8 @@
          // 接口返回错误
          if (status == 0) {
             // 停止上传触发$.upStop函数
+            $('#circle').hide();
+            $("#upid").css("visibility","visible");
             $.upStop(msg);
          }
          
@@ -168,16 +186,21 @@
       upStop: function (errmsg) {
          // 这里只是简单的alert一下结果，可以使用其它的弹窗提醒插件
          alert(errmsg);
+         $("#upid").css("visibility","visible");
+         $('#circle').hide();
       },
 
       // 开始上传前的处理和回调,比如进度条初始化等
       upStart: function () {
+         $("#upid").css("visibility","hidden");
          Progress(0);
          $('#mydialog').hide();
-         alert('上传中,请等待Latex编译完成,大概需要5-10秒,请勿关闭页面。');
+         $('#circle').show();
       }
 
    });
+
+
 
 
 </script>
